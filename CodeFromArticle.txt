@@ -1,7 +1,11 @@
+CODE FROM ARTICLE
 
-Now let’s experiment with programming sounds on the Phasor.  Boot AppleWin and start up a disk image that lets you exit to Basic.  Type CALL -151 to enter the monitor, then type the following lines:
+Now let’s experiment with programming sounds on the Phasor.  
+Boot AppleWin and start up a disk image that lets you exit to Basic.  
+Type CALL -151 to enter the monitor, then type the following lines:
 
 C0CD
+
 The monitor will return a value.  You can ignore it.
 
 C493:FF
@@ -15,10 +19,13 @@ C411:38 N C410:E N C410:C
 C411:8  N C410:F N C410:C
 C411:A  N C410:E N C410:C
 
-If you now hear a tone playing you have typed everything correctly.  To stop the tone, enter:
+If you now hear a tone playing you have typed everything correctly.  
+To stop the tone, enter:
+
 C411:0 N C410:E N C410:C
 
 Let’s play a little bit more:
+
 C411:8  N C410:F N C410:C
 C411:10 N C410:E N C410:C
 C411:B  N C410:F N C410:C
@@ -29,10 +36,12 @@ C411:D  N C410:F N C410:C
 C411:9  N C410:E N C410:C
 
 You should now hear the tone play, and then decay in volume until it is silent.
+
 C411:D  N C410:F N C410:C
 C411:8  N C410:E N C410:C
 
 You should now hear the tone play and decay repeatedly.
+
 C411:C  N C410:F N C410:C
 C411:8  N C410:E N C410:C
 
@@ -49,6 +58,7 @@ C411:D  N C410:F N C410:C
 C411:C  N C410:E N C410:C
 
 You should now hear a train sound, where the noise repeatedly ramps up in a sawtooth pattern.
+
 C411:C  N C410:F N C410:C
 C411:80 N C410:E N C410:C
 C411:D  N C410:F N C410:C
@@ -56,20 +66,88 @@ C411:E  N C410:E N C410:C
 
 You should now hear the sound of the ocean.
 To stop the sound (it will play a one-shot decay, then go silent):
+
 C411:D  N C410:F N C410:C
 C411:9  N C410:E N C410:C
 
 Control-Reset also works as a panic button to stop all sounds, but you may need to re-enter the initialization commands when you want to play sound again:
+
 C0CD
 C493:FF
 C492:FF
 
-These three lines enable communications with the Phasor Card and initialize the sound chips.  The addresses change based on the slot where the Phasor is installed.  The address $C0CD is calculated in hexadecimal as $C08D + $10*slot number.  So slot 1 would be $C09D and slot 7 would be $C0FD.  For the next 2 addresses, the second hex digit is the slot number, so slot 1 would be $C193 and slot 7 would be $C793.  
+
 
 In Applesoft BASIC, this initialization can be done as follows:
+(Note: Add a line number before each command)
 
 REM SET SL=SLOT NUMBER WHERE PHASOR CARD IS INSTALLED
 XX = PEEK (12*4096 + 16*SL + 8*16 + 13)
 POKE 12*4096 + SL*256 + 9*16 + 3, 255
 POKE 12*4096 + SL*256 + 9*16 + 2, 255
+
+
+
+CODE FROM SUPPLEMENT:
+
+The commands that we entered into the monitor can be entered into Basic as a subroutine:
+
+POKE DR(CH-1), RG
+POKE CR(CH-1), LA(0,CH-1)
+POKE CR(CH-1), LA(1,CH-1)
+POKE DR(CH-1), DA
+POKE CR(CH-1), WR(0, CH-1)
+POKE CR(CH-1), WR(1, CH-1)
+RETURN
+
+The arrays should be initialized as follows:
+
+SL = 4: REM SLOT
+DIM CR(4),DR(4),LA(2,4),WR(2,4)
+CR(0) = 12 * 4096 + SL * 256 + 16:CR(1) = CR(0)
+DR(0) = CR(0) + 1:DR(1) = CR(1) + 1
+CR(2) = 12 * 4096 + SL * 256 + 8 * 16:CR(3) = CR(2)
+DR(2) = CR(2) + 1:DR(3) = CR(3) + 1
+LA(0,0) = 15:LA(1,0) = 12:WR(0,0) = 14:WR(1,0) = 12
+LA(0,1) = 23:LA(1,1) = 20:WR(0,1) = 22:WR(1,1) = 20
+LA(0,2) = 15:LA(1,2) = 12:WR(0,2) = 14:WR(1,2) = 12
+LA(0,3) = 23:LA(1,3) = 20:WR(0,3) = 22:WR(1,3) = 20
+
+
+
+The following commands will play a C major chord on Chip 1 using envelope shape 13 to ramp up and 9 to ramp down.
+
+C0CD
+C493:FF
+C492:FF
+C411:0 N C410:F N C410:C
+C411:F4 N C410:E N C410:C
+C411:1 N C410:F N C410:C
+C411:0 N C410:E N C410:C
+C411:2 N C410:F N C410:C
+C411:C1 N C410:E N C410:C
+C411:3 N C410:F N C410:C
+C411:0 N C410:E N C410:C
+C411:4 N C410:F N C410:C
+C411:A3 N C410:E N C410:C
+C411:5 N C410:F N C410:C
+C411:0 N C410:E N C410:C
+C411:7 N C410:F N C410:C
+C411:38 N C410:E N C410:C
+C411:8 N C410:F N C410:C
+C411:10 N C410:E N C410:C
+C411:9 N C410:F N C410:C
+C411:10 N C410:E N C410:C
+C411:A N C410:F N C410:C
+C411:10 N C410:E N C410:C
+C411:B N C410:F N C410:C
+C411:0 N C410:E N C410:C
+C411:C N C410:F N C410:C
+C411:20 N C410:E N C410:C
+C411:D N C410:F N C410:C
+C411:D N C410:E N C410:C
+To stop the chord:
+C411:D N C410:F N C410:C
+C411:9 N C410:E N C410:C
+
 
