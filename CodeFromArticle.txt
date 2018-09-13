@@ -1,0 +1,75 @@
+
+Now let’s experiment with programming sounds on the Phasor.  Boot AppleWin and start up a disk image that lets you exit to Basic.  Type CALL -151 to enter the monitor, then type the following lines:
+
+C0CD
+The monitor will return a value.  You can ignore it.
+
+C493:FF
+C492:FF
+C411:0  N C410:F N C410:C
+C411:F4 N C410:E N C410:C
+C411:1  N C410:F N C410:C
+C411:0  N C410:E N C410:C
+C411:7  N C410:F N C410:C
+C411:38 N C410:E N C410:C
+C411:8  N C410:F N C410:C
+C411:A  N C410:E N C410:C
+
+If you now hear a tone playing you have typed everything correctly.  To stop the tone, enter:
+C411:0 N C410:E N C410:C
+
+Let’s play a little bit more:
+C411:8  N C410:F N C410:C
+C411:10 N C410:E N C410:C
+C411:B  N C410:F N C410:C
+C411:0  N C410:E N C410:C
+C411:C  N C410:F N C410:C
+C411:40 N C410:E N C410:C
+C411:D  N C410:F N C410:C
+C411:9  N C410:E N C410:C
+
+You should now hear the tone play, and then decay in volume until it is silent.
+C411:D  N C410:F N C410:C
+C411:8  N C410:E N C410:C
+
+You should now hear the tone play and decay repeatedly.
+C411:C  N C410:F N C410:C
+C411:8  N C410:E N C410:C
+
+You should now hear the tone play and decay faster, repeatedly.
+
+C411:6  N C410:F N C410:C
+C411:F  N C410:E N C410:C
+C411:7  N C410:F N C410:C
+C411:7  N C410:E N C410:C
+
+You should now hear noise instead of the tone, like a drumbeat.
+
+C411:D  N C410:F N C410:C
+C411:C  N C410:E N C410:C
+
+You should now hear a train sound, where the noise repeatedly ramps up in a sawtooth pattern.
+C411:C  N C410:F N C410:C
+C411:80 N C410:E N C410:C
+C411:D  N C410:F N C410:C
+C411:E  N C410:E N C410:C
+
+You should now hear the sound of the ocean.
+To stop the sound (it will play a one-shot decay, then go silent):
+C411:D  N C410:F N C410:C
+C411:9  N C410:E N C410:C
+
+Control-Reset also works as a panic button to stop all sounds, but you may need to re-enter the initialization commands when you want to play sound again:
+C0CD
+C493:FF
+C492:FF
+
+These three lines enable communications with the Phasor Card and initialize the sound chips.  The addresses change based on the slot where the Phasor is installed.  The address $C0CD is calculated in hexadecimal as $C08D + $10*slot number.  So slot 1 would be $C09D and slot 7 would be $C0FD.  For the next 2 addresses, the second hex digit is the slot number, so slot 1 would be $C193 and slot 7 would be $C793.  
+
+In Applesoft BASIC, this initialization can be done as follows:
+
+REM SET SL=SLOT NUMBER WHERE PHASOR CARD IS INSTALLED
+XX = PEEK (12*4096 + 16*SL + 8*16 + 13)
+POKE 12*4096 + SL*256 + 9*16 + 3, 255
+POKE 12*4096 + SL*256 + 9*16 + 2, 255
+
