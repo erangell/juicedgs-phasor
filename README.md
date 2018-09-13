@@ -1,5 +1,5 @@
 # juicedgs-phasor
-Supplemental material for Juiced GS article about Phasor programming.
+Supplemental material for Juiced GS article about Phasor programming to be published September 2018.
 
 Mockingboard documentation may be downloaded here:
 https://downloads.reactivemicro.com/Apple%20II%20Items/Hardware/Phasor/2018-03-20%20-%20Mockingboard%20Docs.pdf
